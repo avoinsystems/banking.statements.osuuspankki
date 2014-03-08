@@ -26,7 +26,8 @@ class OPCsvStatementParser(CsvStatementParser):
     
     mappings = {
        "date":1, "amount":2, "trntype":4, "payee":5,
-       "acctto":6, "refnum":7, "memo":8, "id":9
+       "refnum":7, "memo":8, "id":9
+       # "bank_account_to":6, 
     }
 
     date_format = "%d.%m.%Y"
@@ -41,18 +42,24 @@ class OPCsvStatementParser(CsvStatementParser):
 
     def split_records(self):
         return csv.reader(self.fin, delimiter=';', quotechar='"')
-
+    
+    def convert_transaction_type(self, op_tx_type, amount):
+        return "DEBIT" if amount < 0 else "CREDIT"
+    
     def parse_record(self, line):
         #Free Headerline
         if self.cur_record <= 1:
             return None
 
         # Change decimalsign from , to .
+        # TODO: check if this needs (need a big transfer to test...)
+        #       .replace('.','').replace(',','.')
         line[2] = line[2].replace(',', '.')
 
         # Set transaction type
-        line[4] = TRANSACTION_TYPES[line[4]]
+        line[4] = self.convert_transaction_type(line[4], float(line[2]))
 
         # fill statement line according to mappings
         sl = super(OPCsvStatementParser, self).parse_record(line)
+        
         return sl
