@@ -14,7 +14,9 @@ How to use
 - install this plugin
 - `ofxstatement edit-config`
 
-    [Osuuspankki]
-    plugin = op
-    account = FIVVXXXXYYYYZZZZWW
-    currency = EUR
+```
+[Osuuspankki]
+plugin = op
+account = FIVVXXXXYYYYZZZZWW
+currency = EUR
+```
